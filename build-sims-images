@@ -1,0 +1,30 @@
+Bootstrap: localimage
+From: images/p3-runtime.2019-1127.sif
+
+# build with
+# singularity -vvv build  /disks/scratch/olson/x.sif build-image.def
+#
+
+#
+# Copy the sims folder into image
+#
+%files
+/disks/tmp/nr-cache.fig /nr
+/home/olson/FIGdisk/dist/releases/current/FortyEight/standalone-seed-sims-slurm.pl /
+
+%post
+
+rm -rf /bootstrap
+#sed -i.bak -e 's,/disks/tmp/nr-cache.fig,/nr,g' /nr/010/nr.pal
+
+%runscript
+job=$1
+
+url_base="http://mc.theseed.org/sims"
+auth=cdbb6ea4a0a5332614269ba0cb7081726a1efd4fd18414f913d70d4217cfddff
+printenv | sort
+export PATH=/opt/patric-common/runtime/bin:$PATH
+
+perl /standalone-seed-sims-slurm.pl \
+				    --nr /nr/$job \
+				    $url_base $job $auth

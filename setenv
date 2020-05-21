@@ -1,0 +1,12 @@
+export PATH=$PATH:/disks/patric-common/runtime/singularity-3.4.1/bin
+export SINGULARITY_CACHEDIR=/scratch/olson/singularity-cache-$USER
+mkdir -p $SINGULARITY_CACHEDIR
+export SINGULARITY_TMPDIR=/dev/shm/olson-tmp
+mkdir -p $SINGULARITY_TMPDIR
+export TMPDIR=/scratch/tmp
+export TEMPDIR=$TMPDIR
+
+export SREGISTRY_REGISTRY_TOKEN=74b1cbae8991b1767567cf6aff15cf14b349951e
+export SREGISTRY_REGISTRY_USERNAME=olsonanl
+export SREGISTRY_CLIENT=registry
+export SREGISTRY_REGISTRY_BASE=http://holly.mcs.anl.gov

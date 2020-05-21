@@ -1,0 +1,25 @@
+Bootstrap: localimage
+#From: images/p3-runtime.2019-1127.sif
+From:  /disks/disk0/olson/p3-runtime-2020-0521-01.sif
+
+%post
+
+cd bootstrap
+git pull
+export BUILD_TOOLS=/opt/patric-common/runtime/build-tools
+
+cd kb_prok_tuxedo
+./install_prok_tuxedo.sh /opt/patric-common/runtime
+
+# cd ../p3_stringtie
+# ./build.package /opt/patric-common/runtime
+
+# cd ../p3_maven
+# ./build.package /opt/patric-common/runtime
+
+# cd ../p3_vigor4
+# env PATH=/opt/patric-common/runtime/bin:$PATH ./build.package /opt/patric-common/runtime
+
+cd ../p3_exonerate
+./build.package /opt/patric-common/runtime
+

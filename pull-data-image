@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#
+# Pull a P3 data image from the repository.
+# 
+# pull-data-image tmp-dir image-name destination-directory
+#
+
+lock_dir=.
+
+if [[ $# -ne 3 ]] ; then
+	echo "Usage: $0 tmp-dir image-name destination-dir" 1>&2
+	exit 1
+fi
+lock_dir=$1
+image=$2
+dest_dir=$3
+
+url=http://holly.mcs.anl.gov/data-images/$image
+
+output_path=$dest_dir/$image
+
+lock=$lock_dir/$image.lock
+tmp=$image.tmp
+
+output_tmp=$dest_dir/$tmp
+
+if [ ! -f "$output_path" ]; then  # If we already have the image, skip everything
+  (
+  flock --exclusive 200 
+  if [ ! -f "$output_path" ]; then   # do a second check once the lock has been released 
+    curl --retry 5 --fail -o $output_tmp -L $url
+    ret=$?
+    if [ $ret -ne 0 ] ; then
+    	echo "Curl of $url to $output_tmp failed with $ret" 1>&2
+	exit $ret
+    fi
+    mv $output_tmp $output_file
+  fi
+  ) 200>$lock
+fi
+
+rm -f $lock
+
+echo $output_path

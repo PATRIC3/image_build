@@ -1,0 +1,9 @@
+Bootstrap: localimage
+From: images/p3-runtime-bootstrap-3.sif
+
+%post
+
+cd bootstrap
+# for development, pull latest
+git pull 
+./bootstrap_modules.pl -d /opt/patric-common/runtime -m modules-patric3-bio-core.dat

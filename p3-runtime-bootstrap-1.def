@@ -1,0 +1,10 @@
+Bootstrap: localimage
+From: images/base-os.sif
+
+%post
+
+mkdir -p /opt/patric-common/runtime
+
+git clone https://github.com/olsonanl/bootstrap
+cd bootstrap
+./bootstrap_modules.pl -d /opt/patric-common/runtime -m modules-patric3-core.dat 

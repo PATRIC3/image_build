@@ -1,0 +1,45 @@
+#!/bin/bash
+
+lock_dir=.
+
+if [[ $# -ne 1 && $# -ne 2 ]] ; then
+	echo "Usage: $0 image-name [output-file]" 1>&2
+	exit 1
+fi
+name=$1
+output_file=$2
+
+if [[ "$output_file" = "" ]] ; then
+
+    # deduce filename
+    
+    output_file=`basename $name`
+    if [[ $output_file =~ (.*):([^:]+)$ ]] ; then
+	base=${BASH_REMATCH[1]}
+	tag=${BASH_REMATCH[2]}
+    else
+	base=$output_file
+	tag=latest
+    fi
+    output_file="${base}_$tag.sif"
+fi
+
+url=shub://holly.mcs.anl.gov/$name
+
+# declare a very similar path (.lock) where Cromwell can access
+lock=$lock_dir/$output_file.lock
+tmp=$output_file.tmp
+
+if [ ! -f "$output_file" ]; then  # If we already have the image, skip everything
+  (
+  flock --exclusive 200 
+  if [ ! -f "$output_file" ]; then   # do a second check once the lock has been released 
+    singularity pull --nohttps $tmp $url
+    mv $tmp $output_file
+  fi
+  ) 200>$lock
+fi
+
+rm -f $lock
+
+echo $output_file

@@ -1,0 +1,11 @@
+Bootstrap: localimage
+From: images/p3-runtime3.2019-0905.sif
+
+%post
+
+export BUILD_TOOLS=/opt/patric-common/runtime/build-tools
+
+cd bootstrap
+# for development, pull latest
+git pull 
+./bootstrap_modules.pl -d /opt/patric-common/runtime -m modules-patric3-core.dat

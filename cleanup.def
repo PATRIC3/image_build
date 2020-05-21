@@ -1,0 +1,8 @@
+Bootstrap: localimage
+From: images/p3-runtime.sif
+
+%post
+
+rm -rf /bootstrap
+rm -rf /opt/patric-common/build-tools/{x86_64-pc-linux-gnu,libexec,bin}
+

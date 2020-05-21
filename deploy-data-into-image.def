@@ -1,0 +1,19 @@
+Bootstrap: localimage
+From: images/p3-runtime3.2019-0905.sif
+
+%setup
+
+	mkdir -p ${SINGULARITY_ROOTFS}/opt/patric-common/data
+	mkdir -p ${SINGULARITY_ROOTFS}/opt/patric-common/data/kmers
+	rsync -arv --exclude \*.nr /disks/patric-common/data/NR ${SINGULARITY_ROOTFS}/opt/patric-common/data
+
+%files
+
+	/vol/core-seed/kmers/core.2018-0531/Data.2 /opt/patric-common/data/kmers/core.2015-0818
+	/disks/patric-common/genemark/genemark-2016-1110/genemark-license/genemark_suite_linux_64/gmsuite /opt/patric-common/gmsuite
+	/disks/patric-common/data/Virulence /opt/patric-common/data/Virulence
+	/disks/patric-common/data/mlstdb-2015-1123 /opt/patric-common/data/mlstdb-2015-1123
+
+%post
+
+

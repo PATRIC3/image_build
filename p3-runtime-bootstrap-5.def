@@ -1,0 +1,16 @@
+Bootstrap: localimage
+From: images/p3-runtime-bootstrap-3.sif
+
+%post
+
+# for mosaik
+yum install -y zlib-static glibc-static
+# for mash
+yum install -y gsl-devel
+
+export BUILD_TOOLS=/opt/patric-common/runtime/build-tools
+
+cd bootstrap
+# for development, pull latest
+git pull 
+./bootstrap_modules.pl -d /opt/patric-common/runtime -m modules-patric3-ngs-core.dat

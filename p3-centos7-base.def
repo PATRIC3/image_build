@@ -1,0 +1,19 @@
+Bootstrap: library
+From: centos:7
+
+%post
+
+yum update -y
+yum group install -y 'Development Tools'
+
+packages="htop telnet traceroute expat-devel \
+	libxml2-devel libdb4-devel libdb-devel openssl-devel \
+	bzip2-devel texinfo libdb-devel libdb4-devel gdbm-devel \
+	libffi-devel \
+	jq \
+	glpk-devel \
+	gd-devel mariadb-devel tcpdump ncurses-devel \
+	readline-devel strace \
+	libcgroup libcgroup-tools bind-utils mailx psmisc perl"
+
+yum install -y $packages

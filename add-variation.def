@@ -1,0 +1,12 @@
+Bootstrap: localimage
+From: images/p3-runtime.sif
+
+%post
+
+cd bootstrap
+git pull
+export BUILD_TOOLS=/opt/patric-common/runtime/build-tools
+
+mkdir -p /opt/patric-common/app-runtime/variation
+
+./bootstrap_modules.pl -d /opt/patric-common/app-runtime/variation -m modules-app-variation.dat 

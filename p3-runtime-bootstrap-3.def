@@ -1,0 +1,11 @@
+Bootstrap: localimage
+From: images/p3-runtime-bootstrap-2.sif
+
+%post
+
+yum install -y apr-devel apr-util-devel
+
+cd bootstrap
+# for development, pull latest
+git pull 
+./bootstrap_modules.pl -d /opt/patric-common/runtime -m modules-patric3-anno-core.dat

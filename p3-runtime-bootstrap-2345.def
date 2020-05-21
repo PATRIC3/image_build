@@ -1,0 +1,97 @@
+Bootstrap: localimage
+From: /disks/disk0/olson/images/p3-centos6-runtime-2020-0520.step2.sif
+#From: images/p3-runtime-bootstrap-1.sif
+#From: images/bs1-with-openssl.sif
+#From: images/base-centos6-2019-1127.sif
+From: /disks/disk0/olson/images/p3-centos6-2020-0520.sif 
+#From: /disks/olson/images/p3-centos6-2020-0210.sif 
+#From: images/base-os.sif
+
+%files
+
+cpan-packages.tar.gz /
+
+%post
+
+yum install -y cmake java-1.8.0-openjdk-devel
+
+BASE=/opt/patric-common
+RT=$BASE/runtime
+mkdir -p $RT
+
+git clone https://github.com/olsonanl/bootstrap
+cd bootstrap
+
+cd kb_perl_runtime
+rm -rf cpan-packages
+tar xzfp /cpan-packages.tar.gz
+
+cd ..
+./bootstrap_modules.pl -d $RT -m modules-patric3-core.dat 
+
+./bootstrap_modules.pl -d $RT -m modules-patric3-build-tools.dat
+
+./bootstrap_modules.pl -d $RT -m modules-patric3-anno-core.dat
+./bootstrap_modules.pl -d $RT -m modules-patric3-bio-core.dat
+
+export BUILD_TOOLS=$RT/build-tools
+
+./bootstrap_modules.pl -d $RT -m modules-patric3-ngs-core.dat
+
+mkdir -p $BASE/app-runtime/variation
+
+./bootstrap_modules.pl -d $BASE/app-runtime/variation -m modules-app-variation.dat 
+
+cd /bootstrap/kb_prok_tuxedo
+./install_prok_tuxedo.sh /opt/patric-common/runtime
+
+cd /bootstrap
+git clone --recursive https://github.com/PATRIC3/freebayes.git
+cd freebayes
+make
+cp bin/freebayes bin/bamleftalign /opt/patric-common/app-runtime/variation/bin/
+cp scripts/freebayes-parallel /opt/patric-common/app-runtime/variation/bin/freebayes-parallel
+chmod +x /opt/patric-common/app-runtime/variation/bin/freebayes-parallel
+
+# part of modules-patric3-ngs-core
+cd /bootstrap/p3_bedtools
+tar=`cat TARFILE`
+file=`basename $tar`
+curl -O -L $tar
+tar xzfp $file
+cd bedtools2
+make -j8 prefix=/opt/patric-common/runtime
+make prefix=/opt/patric-common/runtime install
+
+## cd /bootstrap/p3_samstat
+## (export PATH=$PATH:/opt/patric-common/runtime/samtools-1.9/bin; \
+## 	./build.package /opt/patric-common/runtime)
+
+cd /bootstrap
+curl -O -L http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.0.tar.gz
+tar xzfp stringtie-1.3.0.tar.gz
+cd stringtie-1.3.0
+make release
+cp stringtie /opt/patric-common/runtime/bin
+
+cd ..
+curl -O -L https://github.com/infphilo/hisat2/archive/0f01dc6397a.tar.gz
+tar xzfp 0f01dc6397a.tar.gz 
+cd hisat2-0f01dc6397a/
+make -j6
+cp hisat2 hisat2-* /opt/patric-common/runtime/bin
+
+cd /tmp
+rm -rf FastQC fastqc*
+curl -O -L https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.7.zip
+unzip fastqc_v0.11.7.zip
+cp -r FastQC /opt/patric-common/runtime/FastQC-0.11.7
+cd /opt/patric-common/runtime/bin
+ln -s ../FastQC-0.11.7/fastqc .
+chmod +x fastqc
+
+#
+# Expression transform fails under modern pandas
+#
+/opt/patric-common/runtime/bin/pip2 install --upgrade pandas==0.16
+

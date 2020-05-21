@@ -1,0 +1,29 @@
+Bootstrap: library
+From: centos:6
+
+%post
+
+packages="htop telnet traceroute expat-devel \
+	libxml2-devel openssl-devel \
+	compat-db compat-db42 compat-db43 db4-devel \
+	bzip2-devel texinfo gdbm-devel \
+	libffi-devel enchant-devel \
+	curl libcurl-devel cmake3 \
+	xz-devel gsl-devel zlib-static glibc-static \
+	apr-util-devel apr-devel \
+	jq \
+	log4cxx-devel wget tcsh \
+	gd-devel mariadb-devel tcpdump ncurses-devel \
+	readline-devel strace \
+	java-1.8.0-openjdk mesa-libGL \
+	java-1.8.0-openjdk-devel \
+	glpk-devel \
+	libcgroup libcgroup-tools bind-utils mailx psmisc perl \
+	gnuplot java-1.8.0-openjdk eigen3-devel cmake \
+	asciidoc xmlto"
+
+yum update -y
+yum install -y epel-release
+yum groupinstall -y 'Development Tools'
+
+yum install -y $packages

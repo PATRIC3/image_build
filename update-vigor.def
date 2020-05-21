@@ -1,0 +1,12 @@
+Bootstrap: localimage
+From: images/p3-runtime.2019-1127.plus.rnaseq.sif
+
+%post
+
+cd bootstrap
+git pull
+export BUILD_TOOLS=/opt/patric-common/runtime/build-tools
+
+cd p3_vigor4
+env PATH=/opt/patric-common/runtime/bin:$PATH ./build.package /opt/patric-common/runtime
+
